@@ -6,12 +6,12 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { addTask, editTask, removeTask } from "@/store/slices/tasksSlice";
 import { TaskDialog } from "@/components/management/TaskDialog";
 import type { Task } from "@/lib/types";
-import { mockUsers } from "@/lib/mock-data";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 export default function TasksPage() {
   const dispatch = useAppDispatch();
   const projects = useAppSelector((state) => state.projects.items);
+  const users = useAppSelector((state) => state.users.items);
   const tasks = useAppSelector((state) => state.tasks.items);
   const error = useAppSelector((state) => state.tasks.error);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -20,9 +20,12 @@ export default function TasksPage() {
   const [deleteTarget, setDeleteTarget] = useState<Task | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
-  const sorted = useMemo(() => [...tasks].sort((a, b) => a.dueDate.localeCompare(b.dueDate)), [tasks]);
+  const sorted = useMemo(
+    () => [...tasks].sort((a, b) => (a.dueDate ?? "").localeCompare(b.dueDate ?? "")),
+    [tasks]
+  );
 
-  const getUserName = (id: string) => mockUsers.find((user) => user.id === id)?.name ?? "Unassigned";
+  const getUserName = (id: string) => users.find((user) => user.id === id)?.name ?? "Unassigned";
   const getProjectName = (id?: string) => projects.find((project) => project.id === id)?.name ?? "No project";
 
   return (
@@ -90,7 +93,7 @@ export default function TasksPage() {
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         initialValue={editing}
-        users={mockUsers}
+        users={users}
         projects={projects}
         loading={dialogLoading}
         onSubmit={async (values) => {

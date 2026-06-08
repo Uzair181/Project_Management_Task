@@ -7,7 +7,8 @@ import {
   signOut,
 } from "./slices/authSlice";
 import { addProject, editProject, loadProjects, removeProject } from "./slices/projectsSlice";
-import { addTask, editTask, loadTasks, removeTask } from "./slices/tasksSlice";
+import { addTask, editTask, loadTasks, removeTask, removeTasksByProjectId } from "./slices/tasksSlice";
+import { loadUsers } from "./slices/usersSlice";
 
 export const appListenerMiddleware = createListenerMiddleware();
 
@@ -24,7 +25,8 @@ appListenerMiddleware.startListening({
     editTask.fulfilled,
     removeTask.fulfilled,
     loadProjects.fulfilled,
-    loadTasks.fulfilled
+    loadTasks.fulfilled,
+    loadUsers.fulfilled
   ),
   effect: (action: any, api) => {
     if (login.fulfilled.match(action)) {
@@ -52,6 +54,7 @@ appListenerMiddleware.startListening({
       return;
     }
     if (removeProject.fulfilled.match(action)) {
+      api.dispatch(removeTasksByProjectId(action.payload));
       api.dispatch(enqueueToast({ severity: "success", message: "Project deleted successfully." }));
       return;
     }
@@ -73,6 +76,10 @@ appListenerMiddleware.startListening({
     }
     if (loadTasks.fulfilled.match(action)) {
       api.dispatch(enqueueToast({ severity: "info", message: "Tasks loaded." }));
+      return;
+    }
+    if (loadUsers.fulfilled.match(action)) {
+      api.dispatch(enqueueToast({ severity: "info", message: "Users loaded." }));
     }
   },
 });
@@ -90,7 +97,8 @@ appListenerMiddleware.startListening({
     editTask.rejected,
     removeTask.rejected,
     loadProjects.rejected,
-    loadTasks.rejected
+    loadTasks.rejected,
+    loadUsers.rejected
   ),
   effect: (action: any, api) => {
     const message =

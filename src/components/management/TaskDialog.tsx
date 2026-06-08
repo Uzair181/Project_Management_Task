@@ -91,7 +91,13 @@ export function TaskDialog({
                 control={form.control}
                 name="priority"
                 render={({ field }) => (
-                  <TextField select fullWidth label="Priority" {...field}>
+                  <TextField
+                    select
+                    fullWidth
+                    label="Priority"
+                    {...field}
+                    error={!!form.formState.errors.priority}
+                    helperText={form.formState.errors.priority?.message}>
                     {["Low", "Medium", "High"].map((priority) => (
                       <MenuItem key={priority} value={priority}>
                         {priority}
@@ -115,7 +121,13 @@ export function TaskDialog({
                 control={form.control}
                 name="assignedUserId"
                 render={({ field }) => (
-                  <TextField select fullWidth label="Assigned User" {...field}>
+                  <TextField
+                    select
+                    fullWidth
+                    label="Assigned User"
+                    {...field}
+                    error={!!form.formState.errors.assignedUserId}
+                    helperText={form.formState.errors.assignedUserId?.message}>
                     {users.map((user) => (
                       <MenuItem key={user.id} value={user.id}>
                         {user.name}
@@ -128,7 +140,13 @@ export function TaskDialog({
                 control={form.control}
                 name="status"
                 render={({ field }) => (
-                  <TextField select fullWidth label="Status" {...field}>
+                  <TextField
+                    select
+                    fullWidth
+                    label="Status"
+                    {...field}
+                    error={!!form.formState.errors.status}
+                    helperText={form.formState.errors.status?.message}>
                     {["Todo", "In Progress", "Completed"].map((status) => (
                       <MenuItem key={status} value={status}>
                         {status}

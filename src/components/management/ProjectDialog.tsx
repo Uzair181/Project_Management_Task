@@ -69,7 +69,13 @@ export function ProjectDialog({
               error={!!form.formState.errors.description}
               helperText={form.formState.errors.description?.message}
             />
-            <TextField select label="Status" defaultValue="Active" {...form.register("status")}>
+            <TextField
+              select
+              label="Status"
+              defaultValue="Active"
+              {...form.register("status")}
+              error={!!form.formState.errors.status}
+              helperText={form.formState.errors.status?.message}>
               {["Active", "On Hold", "Completed"].map((status) => (
                 <MenuItem value={status} key={status}>
                   {status}

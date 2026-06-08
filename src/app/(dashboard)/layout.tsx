@@ -7,6 +7,7 @@ import { AppShell } from "@/components/AppShell";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { loadProjects } from "@/store/slices/projectsSlice";
 import { loadTasks } from "@/store/slices/tasksSlice";
+import { loadUsers } from "@/store/slices/usersSlice";
 import { BrandLoader } from "@/components/ui/Loaders";
 
 export default function DashboardLayout({ children }: Readonly<{ children: ReactNode }>) {
@@ -25,7 +26,7 @@ export default function DashboardLayout({ children }: Readonly<{ children: React
     let active = true;
     setBooting(true);
 
-    Promise.all([dispatch(loadProjects()), dispatch(loadTasks())]).finally(() => {
+    Promise.all([dispatch(loadProjects()), dispatch(loadTasks()), dispatch(loadUsers())]).finally(() => {
       if (active) setBooting(false);
     });
 

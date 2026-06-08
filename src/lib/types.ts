@@ -1,10 +1,8 @@
-export type AuthRole = "admin" | "manager" | "member";
-
 export interface AppUser {
   id: string;
   name: string;
   email: string;
-  role: AuthRole;
+  role: "admin" | "manager" | "member";
 }
 
 export type ProjectStatus = "Active" | "On Hold" | "Completed";

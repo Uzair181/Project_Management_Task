@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { Task } from "@/lib/types";
 import { createTaskRequest, deleteTaskRequest, fetchTasks, updateTaskRequest } from "@/lib/mock-api";
 
@@ -54,15 +54,20 @@ const tasksSlice = createSlice({
     clearTasksError(state) {
       state.error = null;
     },
+    removeTasksByProjectId(state, action: PayloadAction<string>) {
+      state.items = state.items.filter((task) => task.projectId !== action.payload);
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(loadTasks.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(loadTasks.fulfilled, (state, action) => {
         state.loading = false;
         state.items = action.payload;
+        state.error = null;
       })
       .addCase(loadTasks.rejected, (state, action) => {
         state.loading = false;
@@ -70,15 +75,18 @@ const tasksSlice = createSlice({
       })
       .addCase(addTask.fulfilled, (state, action) => {
         state.items.unshift(action.payload);
+        state.error = null;
       })
       .addCase(editTask.fulfilled, (state, action) => {
         state.items = state.items.map((item) => (item.id === action.payload.id ? action.payload : item));
+        state.error = null;
       })
       .addCase(removeTask.fulfilled, (state, action) => {
         state.items = state.items.filter((item) => item.id !== action.payload);
+        state.error = null;
       });
   },
 });
 
-export const { clearTasksError } = tasksSlice.actions;
+export const { clearTasksError, removeTasksByProjectId } = tasksSlice.actions;
 export default tasksSlice.reducer;
