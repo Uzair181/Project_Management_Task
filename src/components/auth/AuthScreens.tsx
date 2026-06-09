@@ -118,9 +118,9 @@ export function LoginForm() {
             </Link>
           </Box>
           <Divider />
-          <Typography variant="caption" color="text.secondary">
+          {/* <Typography variant="caption" color="text.secondary">
             Demo login: ayesha@example.com / password123
-          </Typography>
+          </Typography> */}
         </Stack>
       </form>
     </AuthFrame>

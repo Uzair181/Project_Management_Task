@@ -34,8 +34,8 @@ export default function ProjectsPage() {
       {error && <Alert severity="error">{error}</Alert>}
 
       <Card className="!rounded-3xl border border-slate-200/70 dark:border-slate-700/60">
-        <CardContent className="p-0">
-          <Table>
+        <CardContent className="p-0 overflow-x-auto">
+          <Table sx={{ minWidth: 700 }}>
             <TableHead>
               <TableRow>
                 <TableCell>Project Name</TableCell>
