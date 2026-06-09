@@ -14,27 +14,35 @@ const initialState: ProjectsState = {
   error: null,
 };
 
+function getErrorMessage(error: unknown, fallback: string): string {
+  if (error && typeof error === "object" && "response" in error) {
+    const e = error as { response?: { data?: { message?: string } } };
+    return e.response?.data?.message ?? fallback;
+  }
+  return fallback;
+}
+
 export const loadProjects = createAsyncThunk("projects/load", async (_, thunkApi) => {
   try {
     return await fetchProjects();
-  } catch (error: any) {
-    return thunkApi.rejectWithValue(error?.response?.data?.message ?? "Unable to load projects");
+  } catch (error: unknown) {
+    return thunkApi.rejectWithValue(getErrorMessage(error, "Unable to load projects"));
   }
 });
 
 export const addProject = createAsyncThunk("projects/add", async (input: Pick<Project, "name" | "description" | "status">, thunkApi) => {
   try {
     return await createProjectRequest(input);
-  } catch (error: any) {
-    return thunkApi.rejectWithValue(error?.response?.data?.message ?? "Unable to create project");
+  } catch (error: unknown) {
+    return thunkApi.rejectWithValue(getErrorMessage(error, "Unable to create project"));
   }
 });
 
 export const editProject = createAsyncThunk("projects/edit", async ({ id, input }: { id: string; input: Partial<Project> }, thunkApi) => {
   try {
     return await updateProjectRequest(id, input);
-  } catch (error: any) {
-    return thunkApi.rejectWithValue(error?.response?.data?.message ?? "Unable to update project");
+  } catch (error: unknown) {
+    return thunkApi.rejectWithValue(getErrorMessage(error, "Unable to update project"));
   }
 });
 
@@ -42,8 +50,8 @@ export const removeProject = createAsyncThunk("projects/remove", async (id: stri
   try {
     await deleteProjectRequest(id);
     return id;
-  } catch (error: any) {
-    return thunkApi.rejectWithValue(error?.response?.data?.message ?? "Unable to delete project");
+  } catch (error: unknown) {
+    return thunkApi.rejectWithValue(getErrorMessage(error, "Unable to delete project"));
   }
 });
 

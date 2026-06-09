@@ -15,6 +15,7 @@ appListenerMiddleware.startListening({
     editTask.fulfilled,
     removeTask.fulfilled,
   ),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   effect: (action: any, api) => {
     if (addProject.fulfilled.match(action)) {
       api.dispatch(enqueueToast({ severity: "success", message: "Project created successfully." }));
@@ -54,6 +55,7 @@ appListenerMiddleware.startListening({
     editTask.rejected,
     removeTask.rejected,
   ),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   effect: (action: any, api) => {
     const message =
       action.payload && typeof action.payload === "string"

@@ -18,6 +18,14 @@ function normalizeUser(user: AppUser | null | undefined): AppUser | null {
   return { id, name, email, role };
 }
 
+function getErrorMessage(error: unknown, fallback: string): string {
+  if (error && typeof error === "object" && "response" in error) {
+    const e = error as { response?: { data?: { message?: string } } };
+    return e.response?.data?.message ?? fallback;
+  }
+  return fallback;
+}
+
 const initialState: AuthState = {
   user: null,
   token: null,
@@ -38,8 +46,8 @@ export const hydrateAuth = createAsyncThunk("auth/hydrate", async () => {
 export const login = createAsyncThunk("auth/login", async ({ email, password }: { email: string; password: string }, thunkApi) => {
   try {
     return await loginRequest(email, password);
-  } catch (error: any) {
-    return thunkApi.rejectWithValue(error?.response?.data?.message ?? "Unable to login");
+  } catch (error: unknown) {
+    return thunkApi.rejectWithValue(getErrorMessage(error, "Unable to login"));
   }
 });
 
@@ -48,8 +56,8 @@ export const register = createAsyncThunk(
   async ({ name, email, password }: { name: string; email: string; password: string }, thunkApi) => {
     try {
       return await registerRequest(name, email, password);
-    } catch (error: any) {
-      return thunkApi.rejectWithValue(error?.response?.data?.message ?? "Unable to register");
+    } catch (error: unknown) {
+      return thunkApi.rejectWithValue(getErrorMessage(error, "Unable to register"));
     }
   }
 );
@@ -57,16 +65,16 @@ export const register = createAsyncThunk(
 export const forgotPassword = createAsyncThunk("auth/forgotPassword", async ({ email }: { email: string }, thunkApi) => {
   try {
     return await forgotPasswordRequest(email);
-  } catch (error: any) {
-    return thunkApi.rejectWithValue(error?.response?.data?.message ?? "Unable to send reset instructions");
+  } catch (error: unknown) {
+    return thunkApi.rejectWithValue(getErrorMessage(error, "Unable to send reset instructions"));
   }
 });
 
 export const signOut = createAsyncThunk("auth/signOut", async (_, thunkApi) => {
   try {
     return await logoutRequest();
-  } catch (error: any) {
-    return thunkApi.rejectWithValue(error?.response?.data?.message ?? "Unable to sign out");
+  } catch (error: unknown) {
+    return thunkApi.rejectWithValue(getErrorMessage(error, "Unable to sign out"));
   }
 });
 
@@ -115,7 +123,7 @@ const authSlice = createSlice({
         state.error = null;
         state.message = null;
       })
-      .addCase(register.fulfilled, (state, action) => {
+      .addCase(register.fulfilled, (state) => {
         state.loading = false;
         state.user = null;
         state.token = null;

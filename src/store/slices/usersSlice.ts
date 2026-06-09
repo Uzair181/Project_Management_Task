@@ -14,11 +14,19 @@ const initialState: UsersState = {
   error: null,
 };
 
+function getErrorMessage(error: unknown, fallback: string): string {
+  if (error && typeof error === "object" && "response" in error) {
+    const e = error as { response?: { data?: { message?: string } } };
+    return e.response?.data?.message ?? fallback;
+  }
+  return fallback;
+}
+
 export const loadUsers = createAsyncThunk("users/load", async (_, thunkApi) => {
   try {
     return await fetchUsers();
-  } catch (error: any) {
-    return thunkApi.rejectWithValue(error?.response?.data?.message ?? "Unable to load users");
+  } catch (error: unknown) {
+    return thunkApi.rejectWithValue(getErrorMessage(error, "Unable to load users"));
   }
 });
 

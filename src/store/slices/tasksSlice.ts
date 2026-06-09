@@ -14,27 +14,35 @@ const initialState: TasksState = {
   error: null,
 };
 
+function getErrorMessage(error: unknown, fallback: string): string {
+  if (error && typeof error === "object" && "response" in error) {
+    const e = error as { response?: { data?: { message?: string } } };
+    return e.response?.data?.message ?? fallback;
+  }
+  return fallback;
+}
+
 export const loadTasks = createAsyncThunk("tasks/load", async (_, thunkApi) => {
   try {
     return await fetchTasks();
-  } catch (error: any) {
-    return thunkApi.rejectWithValue(error?.response?.data?.message ?? "Unable to load tasks");
+  } catch (error: unknown) {
+    return thunkApi.rejectWithValue(getErrorMessage(error, "Unable to load tasks"));
   }
 });
 
 export const addTask = createAsyncThunk("tasks/add", async (input: Pick<Task, "title" | "description" | "priority" | "dueDate" | "assignedUserId" | "status" | "projectId">, thunkApi) => {
   try {
     return await createTaskRequest(input);
-  } catch (error: any) {
-    return thunkApi.rejectWithValue(error?.response?.data?.message ?? "Unable to create task");
+  } catch (error: unknown) {
+    return thunkApi.rejectWithValue(getErrorMessage(error, "Unable to create task"));
   }
 });
 
 export const editTask = createAsyncThunk("tasks/edit", async ({ id, input }: { id: string; input: Partial<Task> }, thunkApi) => {
   try {
     return await updateTaskRequest(id, input);
-  } catch (error: any) {
-    return thunkApi.rejectWithValue(error?.response?.data?.message ?? "Unable to update task");
+  } catch (error: unknown) {
+    return thunkApi.rejectWithValue(getErrorMessage(error, "Unable to update task"));
   }
 });
 
@@ -42,8 +50,8 @@ export const removeTask = createAsyncThunk("tasks/remove", async (id: string, th
   try {
     await deleteTaskRequest(id);
     return id;
-  } catch (error: any) {
-    return thunkApi.rejectWithValue(error?.response?.data?.message ?? "Unable to delete task");
+  } catch (error: unknown) {
+    return thunkApi.rejectWithValue(getErrorMessage(error, "Unable to delete task"));
   }
 });
 

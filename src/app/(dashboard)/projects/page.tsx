@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Alert, Button, Card, CardContent, Chip, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
+import { Alert, Button, Card, CardContent, Chip, Stack, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { addProject, editProject, removeProject } from "@/store/slices/projectsSlice";
 import { ProjectDialog } from "@/components/management/ProjectDialog";

@@ -31,14 +31,12 @@ interface SidebarProps {
   pathname: string;
   userName?: string;
   userEmail?: string;
-  theme: "light" | "dark";
   signOutLoading: boolean;
   onClose: () => void;
-  onToggleTheme: () => void;
   onSignOut: () => void;
 }
 
-function Sidebar({ mobile, pathname, userName, userEmail, theme, signOutLoading, onClose, onToggleTheme, onSignOut }: SidebarProps) {
+function Sidebar({ mobile, pathname, userName, userEmail, signOutLoading, onClose, onSignOut }: SidebarProps) {
   const base = mobile
     ? "bg-slate-950 text-white"
     : "bg-white dark:bg-slate-950 text-slate-900 dark:text-white";
@@ -147,10 +145,8 @@ export function AppShell({ children }: { children: ReactNode }) {
     pathname: pathname ?? "",
     userName: user?.name,
     userEmail: user?.email,
-    theme,
     signOutLoading,
     onClose: () => setMobileOpen(false),
-    onToggleTheme: toggle,
     onSignOut: handleSignOut,
   };
 
